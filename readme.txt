@@ -12,3 +12,5 @@ uint32_t srb;
 uint8_t ma; (МА)
 uint8_t ag; (АнГем)
 uint8_t pr; (Прог)
+
+
