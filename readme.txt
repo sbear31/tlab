@@ -1,6 +1,6 @@
 формат структур:
 struct st_d (Student Data) {
-  uint32_t srb (средний балл);
+  uint32_t srb (номер зачетки);
   char surename[20];
   char name[20];
   char lastname[20];
