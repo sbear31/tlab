@@ -33,3 +33,8 @@ struct st_av (Student Average) {
   float average;
 };
 
+struct Fail Student{
+  uint8_t group;//0 4
+  uint32_t srb;//4 8 
+  char[20] surename;//8 28
+}
