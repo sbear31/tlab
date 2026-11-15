@@ -81,7 +81,6 @@ void Create_reports_groups_alf(uint8_t group, const std::string& name) {
     file.close();
     newfile.close();
 }
-
 //h) формирования ведомости оценок для заданной группы, упорядоченной по убыванию среднего балла;   
 struct st_av {
     uint8_t group;
@@ -135,7 +134,54 @@ void Create_reports_groups_points(uint8_t group, const std::string& name) {
     file.close();
     newfile.close();
 }
-
+//i) формирования списка отличников, состоящего из фамилии, номера группы, номера зачетки;
+struct prem_st_m {
+    uint8_t group;
+    uint32_t srb;
+    char surename[20];
+    char sub_1[8];
+    uint8_t m_sub_1;
+    char sub_2[8];
+    uint8_t m_sub_2;
+    char sub_3[8];
+    uint8_t m_sub_3;
+};
+struct st_ex {
+    uint8_t group;
+    uint32_t srb;
+    char surename[20];
+};
+bool check(prem_st_m stud) {
+    if (stud.m_sub_1 < 8) return false;
+    if (stud.m_sub_2 < 8) return false;
+    if (stud.m_sub_3 < 8) return false;
+    return true;
+}
+void rewrite_struct(prem_st_m stud, st_ex newstud) {
+    newstud.group = stud.group;
+    newstud.srb = stud.srb;
+    strcpy(newstud.surename, stud.surename);
+}
+void Create_reports_exstud(const std::string& name) {
+    const uint16_t size_struct = sizeof(prem_st_m);
+    std::ifstream file(name, std::ios::binary);
+    std::ofstream newfile("reports_groups_exstud.bin", std::ios::binary | std::ios::trunc);
+    prem_st_m stud;
+    file.seekg(0, std::ios::end);
+    std::streamsize size_report = file.tellg();
+    file.seekg(0, std::ios::beg);
+    for (int i = 0; i * size_struct < (uint32_t)size_report; ++i) {
+        file.seekg(i * size_struct, std::ios::beg);
+        file.read(reinterpret_cast<char*>(&stud), size_struct);
+        if (check(stud)) {
+            st_ex newstud;
+            rewrite_struct(stud, newstud);
+            newfile.write(reinterpret_cast<const char*>(&newstud), sizeof(st_ex));
+        }
+    }
+    file.close();
+    newfile.close();
+}
 int main() {   
     try {
         setlocale(LC_ALL, ".1251");
