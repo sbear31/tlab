@@ -9,7 +9,7 @@ void ifcheck(std::ifstream& ff){
 }
 
 void ofcheck(std::ofstream& ff){
-    if(!ff) throw "file open error";
+    if(!ff) throw "file open eror";
 }
 
 void fail_create(std::ifstream& ff,std::string fail_ad){
@@ -17,25 +17,24 @@ void fail_create(std::ifstream& ff,std::string fail_ad){
     try {
         ofcheck(fail_b);
         char temp[56]{};
-        while(ff.read(temp, 56)){
-            if (temp[36] < 4 || temp[45] < 4 || temp[54] < 4 ){
-                temp[26] = '\0';
+        while(ff.read(reinterpret_cast<char*>(&temp), 56)){
+            if (static_cast<int>(temp[36]) < 4 || static_cast<int>(temp[45]) < 4 || static_cast<int>(temp[54]) < 4 ){
                 fail_b.write(reinterpret_cast<char*>(&temp), 28);
             }
         }
-    } catch(const char*& error){
+    } catch(const char* error){
         std::cout << error;
     }
 }
 
 int main(){
     setlocale(LC_ALL, ".1251");
-    std::string mark_bin_ad{"premium_mark"};
+    std::string mark_bin_ad{"премиум_оценки"};
     std::ifstream m_bin(mark_bin_ad+".bin", std::ios::in | std::ios::binary);
     try{
         ifcheck(m_bin);
         fail_create(m_bin,"fail.bin");
-    } catch (const char*& error){
+    } catch (const char* error){
         std::cout << error << '\n';
     }
     return 0;
