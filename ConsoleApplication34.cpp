@@ -1,6 +1,11 @@
-﻿#include <iostream>
+﻿#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
 #include <fstream>
 #include <string>
+
+#include <cstring>
+#include <cstddef>
+#include <cstdint>
 
 //g) формирования ведомости оценок для заданной группы, упорядоченной по алфавиту;
 struct prem_st_m {
@@ -66,7 +71,6 @@ void Create_reports_groups_alf(uint8_t group, const std::string& name) {
     prem_st_m stud;
     file.seekg(0, std::ios::end);        
     std::streamsize size_report = file.tellg();
-    file.seekg(0, std::ios::beg);
     for (int i = 0; i * size_struct < (uint32_t)size_report; ++i) {
         file.seekg(i * size_struct, std::ios::beg);
         temp = file.peek();
@@ -76,6 +80,9 @@ void Create_reports_groups_alf(uint8_t group, const std::string& name) {
             ++j;
         }
     }
+    //newfile.flush();//                 
+    //newfile.clear();//
+    //newfile.seekg(0, std::ios::beg);//
     newfile.seekp(0, std::ios::beg);
     Sort1(newfile, j, size_struct);
     file.close();
@@ -119,7 +126,6 @@ void Create_reports_groups_points(uint8_t group, const std::string& name) {
     st_av stud;
     file.seekg(0, std::ios::end);
     std::streamsize size_report = file.tellg(); 
-    file.seekg(0, std::ios::beg);
     for (int i = 0; i * size_struct < (uint32_t)size_report; ++i) {
         file.seekg(i * size_struct, std::ios::beg);
         temp = file.peek();
@@ -135,41 +141,29 @@ void Create_reports_groups_points(uint8_t group, const std::string& name) {
     newfile.close();
 }
 //i) формирования списка отличников, состоящего из фамилии, номера группы, номера зачетки;
-struct prem_st_m {
-    uint8_t group;
-    uint32_t srb;
-    char surename[20];
-    char sub_1[8];
-    uint8_t m_sub_1;
-    char sub_2[8];
-    uint8_t m_sub_2;
-    char sub_3[8];
-    uint8_t m_sub_3;
-};
 struct st_ex {
     uint8_t group;
     uint32_t srb;
     char surename[20];
 };
-bool check(prem_st_m stud) {
+bool check(const prem_st_m& stud) {
     if (stud.m_sub_1 < 8) return false;
     if (stud.m_sub_2 < 8) return false;
     if (stud.m_sub_3 < 8) return false;
     return true;
 }
-void rewrite_struct(prem_st_m stud, st_ex newstud) {
+void rewrite_struct(const prem_st_m& stud, st_ex& newstud) {
     newstud.group = stud.group;
     newstud.srb = stud.srb;
     strcpy(newstud.surename, stud.surename);
 }
 void Create_reports_exstud(const std::string& name) {
-    const uint16_t size_struct = sizeof(prem_st_m);
+    const uint32_t size_struct = sizeof(prem_st_m);
     std::ifstream file(name, std::ios::binary);
     std::ofstream newfile("reports_groups_exstud.bin", std::ios::binary | std::ios::trunc);
     prem_st_m stud;
     file.seekg(0, std::ios::end);
     std::streamsize size_report = file.tellg();
-    file.seekg(0, std::ios::beg);
     for (int i = 0; i * size_struct < (uint32_t)size_report; ++i) {
         file.seekg(i * size_struct, std::ios::beg);
         file.read(reinterpret_cast<char*>(&stud), size_struct);
@@ -185,7 +179,7 @@ void Create_reports_exstud(const std::string& name) {
 int main() {   
     try {
         setlocale(LC_ALL, ".1251");
-        Create_reports_groups_points(4, "file_second.bin");
+        Create_reports_exstud("file.bin");
 
     }
     catch (const char* error) {
