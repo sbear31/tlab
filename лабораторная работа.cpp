@@ -2,6 +2,9 @@
 #include <fstream>
 #include <string>
 #include <cstdint>
+#include <cstring>
+#include <cstddef>
+
 struct st_d {
 	uint32_t srb;
 	char surname[20];
