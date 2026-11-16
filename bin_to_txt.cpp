@@ -44,7 +44,7 @@ int main(){
     std::ifstream fail("adres.bin", std::ios::in | std::ios::binary);
     try {
         ifcheck(fail);
-        bin_to_txt(fail, "fail_sort");
+        bin_to_txt(fail, "need_name");
     }catch (const char* error){
         std::cout << error << '\n';
     }
