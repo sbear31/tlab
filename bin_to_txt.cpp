@@ -41,7 +41,7 @@ void bin_to_txt(std::ifstream& ff, std::string out_ad){
 }
 
 int main(){
-    std::ifstream fail("fail_sort.bin", std::ios::in | std::ios::binary);
+    std::ifstream fail("adres.bin", std::ios::in | std::ios::binary);
     try {
         ifcheck(fail);
         bin_to_txt(fail, "fail_sort");
