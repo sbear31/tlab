@@ -32,4 +32,9 @@ struct st_av (Student Average) {
   char surename[20];
   float average;
 };
+struct st_ex (Exelent Student) {
+    uint8_t group;
+    uint32_t srb;
+    char surename[20];
+};
 
