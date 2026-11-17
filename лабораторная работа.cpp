@@ -1,24 +1,24 @@
-﻿#include <iostream>
+#include <iostream>
 #include <fstream>
 #include <string>
 #include <cstdint>
-struct st_d {
+struct ST_D {
 	uint32_t srb;
 	char surname[20];
 	char name[20];
 	char lastname[20];
 };
-struct st_m {
+struct ST_M {
 	uint8_t group;
 	uint32_t srb;
 	char sub_1[8];
-	uint8_t m_sub_1;  
+	uint8_t m_sub_1;
 	char sub_2[8];
 	uint8_t m_sub_2;
 	char sub_3[8];
 	uint8_t m_sub_3;
 };
-struct prem_st_m {
+struct PREM_ST_M {
 	uint8_t group;
 	uint32_t srb;
 	char surname[20];
@@ -29,7 +29,7 @@ struct prem_st_m {
 	char sub_3[8];
 	uint8_t m_sub_3;
 };
-struct st_av {
+struct ST_AV {
 	uint8_t group;
 	uint32_t srb;
 	char surname[20];
@@ -67,12 +67,12 @@ void string_to_masschar(char(&str_c)[N], const std::string& str_s) {
 void check_digits(const std::string& str) {
 	if (str.empty()) {
 		throw "empty code";
-	}	
+	}
 	for (int i = 0; i < str.size(); ++i) {
 		if (str[i] < '0' || str[i] > '9') {
 			throw "code is not a number";
 		}
-	}	
+	}
 }
 void txt_to_binary_st_d(std::ifstream& file, std::ofstream& bin) {
 	std::string line;
@@ -94,7 +94,7 @@ void txt_to_binary_st_d(std::ifstream& file, std::ofstream& bin) {
 			std::cout << "bad line: " << line << "\n";
 			continue;
 		}
-		st_d student{};
+		ST_D student{};
 		try {
 			check_digits(line.substr(0, pos[0]));
 			student.srb = static_cast<uint32_t>(std::stoul(line.substr(0, pos[0])));
@@ -106,7 +106,7 @@ void txt_to_binary_st_d(std::ifstream& file, std::ofstream& bin) {
 			std::cout << message;
 			continue;
 		}
-		bin.write(reinterpret_cast<const char*>(&student), sizeof(st_d));
+		bin.write(reinterpret_cast<const char*>(&student), sizeof(ST_D));
 	}
 }
 void txt_to_binary_st_m(std::ifstream& file, std::ofstream& bin) {
@@ -130,7 +130,7 @@ void txt_to_binary_st_m(std::ifstream& file, std::ofstream& bin) {
 			std::cout << "bad line: " << line << "\n";
 			continue;
 		}
-		st_m marks{};
+		ST_M marks{};
 		try {
 			check_digits(line.substr(0, pos[0]));
 			marks.group = static_cast<uint8_t>(std::stoul(line.substr(0, pos[0])));
@@ -150,14 +150,14 @@ void txt_to_binary_st_m(std::ifstream& file, std::ofstream& bin) {
 			std::cout << message;
 			continue;
 		}
-		bin.write(reinterpret_cast<const char*>(&marks), sizeof(st_m));
+		bin.write(reinterpret_cast<const char*>(&marks), sizeof(ST_M));
 	}
 }
 void add_surname_to_st_m(std::ifstream& bin_st_d, std::ifstream& bin_st_m, std::ofstream& bin_prem_st_m) {
-	st_m marks;
-	while (bin_st_m.read(reinterpret_cast<char*>(&marks), sizeof(st_m))) {
+	ST_M marks;
+	while (bin_st_m.read(reinterpret_cast<char*>(&marks), sizeof(ST_M))) {
 
-		prem_st_m prem_marks{};
+		PREM_ST_M prem_marks{};
 		prem_marks.group = marks.group;
 		prem_marks.srb = marks.srb;
 		prem_marks.m_sub_1 = marks.m_sub_1;
@@ -173,8 +173,8 @@ void add_surname_to_st_m(std::ifstream& bin_st_d, std::ifstream& bin_st_m, std::
 		bin_st_d.clear();
 		bin_st_d.seekg(0, std::ios::beg);
 
-		st_d student{};
-		while (bin_st_d.read(reinterpret_cast<char*>(&student), sizeof(st_d))) {
+		ST_D student{};
+		while (bin_st_d.read(reinterpret_cast<char*>(&student), sizeof(ST_D))) {
 			if (student.srb == marks.srb) {
 				for (int j = 0; j < 20; ++j)
 					prem_marks.surname[j] = student.surname[j];
@@ -182,14 +182,14 @@ void add_surname_to_st_m(std::ifstream& bin_st_d, std::ifstream& bin_st_m, std::
 			}
 		}
 
-		bin_prem_st_m.write(reinterpret_cast<const char*>(&prem_marks), sizeof(prem_st_m));
+		bin_prem_st_m.write(reinterpret_cast<const char*>(&prem_marks), sizeof(PREM_ST_M));
 	}
 }
 void average_to_bin(std::ifstream& bin_prem_st_m, std::ofstream& bin_avg)
 {
-	prem_st_m prem_marks;
-	while (bin_prem_st_m.read(reinterpret_cast<char*>(&prem_marks), sizeof(prem_st_m))) {
-		st_av averager;
+	PREM_ST_M prem_marks;
+	while (bin_prem_st_m.read(reinterpret_cast<char*>(&prem_marks), sizeof(PREM_ST_M))) {
+		ST_AV averager;
 		averager.group = prem_marks.group;
 		averager.srb = prem_marks.srb;
 		for (int i = 0; i < sizeof(prem_marks.surname); ++i) {
@@ -198,73 +198,60 @@ void average_to_bin(std::ifstream& bin_prem_st_m, std::ofstream& bin_avg)
 		averager.average = (static_cast<float>(prem_marks.m_sub_1) +
 			static_cast<float>(prem_marks.m_sub_2) +
 			static_cast<float>(prem_marks.m_sub_3)) / 3.0f;
-		bin_avg.write(reinterpret_cast<const char*>(&averager), sizeof(st_av));
+		bin_avg.write(reinterpret_cast<const char*>(&averager), sizeof(ST_AV));
 	}
 }
-int main()
-{
+int main() {
 	setlocale(LC_ALL, ".1251");
 
-	//std::ifstream file_st_d("зачетка.txt", std::ios::in);
-	//std::ofstream bin_st_d("зачетка.bin", std::ios::binary | std::ios::out);
+	std::ifstream file_st_d("student_data.txt", std::ios::in);
+	std::ifstream file_st_m("student_mark.txt", std::ios::in);
 
-	//std::ifstream file_st_m("оценки.txt", std::ios::in);
-	//std::ofstream bin_st_m("оценки.bin", std::ios::binary | std::ios::out);
-
-	/*std::ifstream bin_st_d("зачетка.bin", std::ios::binary | std::ios::in);
-	std::ifstream bin_st_m("оценки.bin", std::ios::binary | std::ios::in);
-	std::ofstream bin_prem_st_m("премиум_оценки.bin", std::ios::binary | std::ios::out);*/
-
-	std::ifstream bin_prem_st_m("премиум_оценки.bin", std::ios::binary | std::ios::in);
-	std::ofstream bin_avg("средний_балл.bin", std::ios::binary | std::ios::out);
+	std::ofstream bin_st_d("student_data.bin", std::ios::binary | std::ios::trunc);
+	std::ofstream bin_st_m("student_mark.bin", std::ios::binary | std::ios::trunc);
+	std::ofstream bin_prem("premium_mark.bin", std::ios::binary | std::ios::trunc);
+	std::ofstream bin_avg("average_mark.bin", std::ios::binary | std::ios::trunc);
 
 	try {
-		//check_file(file_st_d);
-		//check_file(file_st_m);
-
-		//check_file(bin_st_d);
-		//check_file(bin_st_m);
-
-		check_file(bin_prem_st_m);
+		check_file(file_st_d);
+		check_file(file_st_m);
 	}
 	catch (const char* message) {
 		std::cout << message;
 		return 1;
 	}
-	/*if (!bin_st_d) {
-		std::cerr << "cannot open output\n";
-		return 1; 
-	}*/
-	/*if (!bin_st_m) {
-		std::cerr << "cannot open output\n";
-		return 1;
-	}*/
-    /*if(!bin_prem_st_m) {
-		std::cerr << "cannot open output\n";
-		return 1;
-	}*/
-	if (!bin_avg) {
+
+	if (!bin_st_d || !bin_st_m || !bin_prem || !bin_avg) {
 		std::cerr << "cannot open output\n";
 		return 1;
 	}
+//1
+	txt_to_binary_st_d(file_st_d, bin_st_d);
+	file_st_d.close();
+	bin_st_d.close();
 
-	//txt_to_binary_st_d(file_st_d, bin_st_d);
-	//file_st_d.close();
-	//bin_st_d.close();
-
-	/*txt_to_binary_st_m(file_st_m, bin_st_m);
+//2
+	txt_to_binary_st_m(file_st_m, bin_st_m);
 	file_st_m.close();
-	bin_st_m.close();*/
+	bin_st_m.close();
 
-	//add_surname_to_st_m(bin_st_d, bin_st_m, bin_prem_st_m);
-	//std::cout << sizeof(st_m);
-	//bin_st_d.close();
-	//bin_st_m.close();
-	//bin_prem_st_m.close();
+//3
+	std::ifstream bin_st_d_in("student_data.bin", std::ios::binary);
+	std::ifstream bin_st_m_in("student_mark.bin", std::ios::binary);
+	check_file(bin_st_d_in);
+	check_file(bin_st_m_in);
+	add_surname_to_st_m(bin_st_d_in, bin_st_m_in, bin_prem);
+	bin_st_d_in.close();
+	bin_st_m_in.close();
+	bin_prem.close();
 
-	average_to_bin(bin_prem_st_m, bin_avg);
-	bin_prem_st_m.close();
+//4
+	std::ifstream bin_prem_in("premium_mark.bin", std::ios::binary);
+	check_file(bin_prem_in);
+	average_to_bin(bin_prem_in, bin_avg);
+	bin_prem_in.close();
 	bin_avg.close();
-	return 0;
 
+	std::cout << "all tasks done\n";
+	return 0;
 }
