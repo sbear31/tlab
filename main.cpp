@@ -1,15 +1,16 @@
 #define _CRT_SECURE_NO_WARNINGS
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <cstring>
 #include <cstddef>
 #include <cstdint>
-#include<struct.h>
-#include<main.h>
+#include "struct.h"
+#include "main.h"
 
-template <size_t N>
-void string_to_masschar(char(&str_c)[N], const std::string& str_s) {
+// char(&str_c)[N]
+void string_to_masschar(char* str_c, uint16_t N, const std::string& str_s) {
 	for (std::size_t i = 0; i < N; ++i)
 		str_c[i] = '\0';
 
@@ -24,6 +25,7 @@ void string_to_masschar(char(&str_c)[N], const std::string& str_s) {
 
 	str_c[N - 1] = '\0';
 }
+
 void check_digits(const std::string& str) {
 	if (str.empty()) {
 		throw "empty code";
@@ -34,6 +36,8 @@ void check_digits(const std::string& str) {
 		}
 	}	
 }
+
+
 
 void swap_structs(std::fstream& file, uint32_t i, uint32_t j, uint16_t size_struct) {
     if (i == j) return;
@@ -63,7 +67,7 @@ bool check_stex(const Prem_St_M& stud) {
 void rewrite_struct(const Prem_St_M& stud, St_Ex& newstud) {
     newstud.group = stud.group;
     newstud.srb = stud.srb;
-    strcpy(newstud.surename, stud.surname);
+    strcpy(newstud.surname, stud.surname);
 }
 
 void sort_reports_groups_alf(std::fstream& file, uint32_t size, uint16_t size_struct) {
@@ -86,10 +90,11 @@ void sort_reports_groups_alf(std::fstream& file, uint32_t size, uint16_t size_st
         }
     }
 }
-void create_reports_groups_alf(uint8_t group, const std::string& name) {//принимает группу и файл с Prem_st_m
+void create_reports_groups_alf(uint8_t group, const std::string& name,const std::string& ad) {//принимает группу и файл с Prem_st_m
     const uint16_t size_struct = sizeof(Prem_St_M);
     std::ifstream file(name, std::ios::binary);
-    std::fstream newfile("Reports_groups_alf.bin", std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
+    std::fstream newfile(ad, std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
+    fchecko(newfile);
     uint16_t temp, j = 0;
     Prem_St_M stud;
     file.seekg(0, std::ios::end);        
@@ -103,8 +108,10 @@ void create_reports_groups_alf(uint8_t group, const std::string& name) {//при
             ++j;
         }
     }
+    
     newfile.seekg(0, std::ios::beg);
     newfile.seekp(0, std::ios::beg);
+    fchecki(newfile);
     sort_reports_groups_alf(newfile, j, size_struct);
     file.close();
     newfile.close();
@@ -130,10 +137,11 @@ void sort_reports_groups_points(std::fstream& file, uint32_t size, uint16_t size
     }
 }
 
-void create_reports_groups_points(uint8_t group, const std::string& name) {//принимает группу и файл St_av
+void create_reports_groups_points(uint8_t group, const std::string& name, const std::string& ad) {//принимает группу и файл St_av
     const uint16_t size_struct = sizeof(St_Av);
     std::ifstream file(name, std::ios::binary);
-    std::fstream newfile("Reports_groups_points.bin", std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
+    std::fstream newfile(ad, std::ios::binary | std::ios::in | std::ios::out | std::ios::trunc);
+    fchecko(newfile);
     uint16_t temp, j = 0;
     St_Av stud;
     file.seekg(0, std::ios::end);
@@ -147,8 +155,10 @@ void create_reports_groups_points(uint8_t group, const std::string& name) {//п�
             ++j;
         }
     }
+    
     newfile.seekg(0, std::ios::beg);
     newfile.seekp(0, std::ios::beg);
+    fchecki(newfile);
     sort_reports_groups_points(newfile, j, size_struct);
     file.close();
     newfile.close();

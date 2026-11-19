@@ -1,12 +1,13 @@
+#pragma once
 #include<iostream>
 #include<cstdint>
 #include <fstream>
 #include <string>
-#include <main.h>
-#include <struct.h>
+#include"main.h"
+#include "struct.h"
 
 void txt_to_binary_st_d(std::ifstream& file, std::ofstream& bin) {
-	std::string line;
+	std::string line{};
 	while (std::getline(file, line)) {
 		if (!line.empty() && line.back() == '\r') {
 			line.pop_back();
@@ -22,25 +23,19 @@ void txt_to_binary_st_d(std::ifstream& file, std::ofstream& bin) {
 			beg = pos[k] + 1;
 		}
 		if (k != 3 || line.find(';', beg) != std::string::npos) {
-			std::cout << "bad line: " << line << "\n";
-			continue;
+			throw "bad line'\n";
 		}
 		St_D student{};
-		try {
 			check_digits(line.substr(0, pos[0]));
 			student.srb = static_cast<uint32_t>(std::stoul(line.substr(0, pos[0])));
-			string_to_masschar<20>(student.surname, line.substr(pos[0] + 1, pos[1] - pos[0] - 1));
-			string_to_masschar<20>(student.name, line.substr(pos[1] + 1, pos[2] - pos[1] - 1));
-			string_to_masschar<20>(student.lastname, line.substr(pos[2] + 1));
-		}
-		catch (const char* message) {
-			std::cout << message;
-			continue;
-		}
+			string_to_masschar(student.surname,20, line.substr(pos[0] + 1, pos[1] - pos[0] - 1));
+			string_to_masschar(student.name,20, line.substr(pos[1] + 1, pos[2] - pos[1] - 1));
+			string_to_masschar(student.lastname,20, line.substr(pos[2] + 1));
+
 		bin.write(reinterpret_cast<const char*>(&student), sizeof(St_D));
 	}
 }
-void txt_to_binary_st_m(std::ifstream& file, std::ofstream& bin) {
+void txt_to_binary_st_m(std::ifstream& file, std::ofstream& bin) { 
 	std::string line;
 	while (std::getline(file, line)) {
 		if (!line.empty() && line.back() == '\r') {
@@ -67,13 +62,13 @@ void txt_to_binary_st_m(std::ifstream& file, std::ofstream& bin) {
 			marks.group = static_cast<uint8_t>(std::stoul(line.substr(0, pos[0])));
 			check_digits(line.substr(pos[0] + 1, pos[1] - pos[0] - 1));
 			marks.srb = static_cast<uint32_t>(std::stoul(line.substr(pos[0] + 1, pos[1] - pos[0] - 1)));
-			string_to_masschar<8>(marks.sub_1, line.substr(pos[1] + 1, pos[2] - pos[1] - 1));
+			string_to_masschar(marks.sub_1,8, line.substr(pos[1] + 1, pos[2] - pos[1] - 1));
 			check_digits(line.substr(pos[2] + 1, pos[3] - pos[2] - 1));
 			marks.m_sub_1 = static_cast<uint8_t>(std::stoul(line.substr(pos[2] + 1, pos[3] - pos[2] - 1)));
-			string_to_masschar<8>(marks.sub_2, line.substr(pos[3] + 1, pos[4] - pos[3] - 1));
+			string_to_masschar(marks.sub_2,8, line.substr(pos[3] + 1, pos[4] - pos[3] - 1));
 			check_digits(line.substr(pos[4] + 1, pos[5] - pos[4] - 1));
 			marks.m_sub_2 = static_cast<uint8_t>(std::stoul(line.substr(pos[4] + 1, pos[5] - pos[4] - 1)));
-			string_to_masschar<8>(marks.sub_3, line.substr(pos[5] + 1, pos[6] - pos[5] - 1));
+			string_to_masschar(marks.sub_3,8, line.substr(pos[5] + 1, pos[6] - pos[5] - 1));
 			check_digits(line.substr(pos[6] + 1));
 			marks.m_sub_3 = static_cast<uint8_t>(std::stoul(line.substr(pos[6] + 1)));
 		}
@@ -117,7 +112,7 @@ void add_surname_to_st_m(std::ifstream& bin_st_d, std::ifstream& bin_st_m, std::
 	}
 }
 
-void average_to_bin(std::ifstream& bin_prem_st_m, std::ofstream& bin_avg)
+void average_to_bin(std::ifstream& bin_prem_st_m, std::ofstream& bin_avg) // prem,bin --->bin
 {
 	Prem_St_M prem_marks;
 	while (bin_prem_st_m.read(reinterpret_cast<char*>(&prem_marks), sizeof(Prem_St_M))) {
@@ -135,19 +130,19 @@ void average_to_bin(std::ifstream& bin_prem_st_m, std::ofstream& bin_avg)
 }
 
 void bin_to_txt(std::ifstream& ff, std::string out_ad){
-    std::ofstream out(out_ad+".txt", std::ios::out | std::ios::trunc);
+    std::ofstream out(out_ad, std::ios::out | std::ios::trunc);
     try{
         ofcheck(out);
         ff.seekg(0,std::ios::end);
         long long size = ff.tellg();
         ff.seekg(0, std::ios::beg);
-        if(size%sizeof(Fail_Student)) throw "before fail";
-        uint32_t k = size/sizeof(Fail_Student);
-        Fail_Student temp{};
+        if(size%sizeof(St_Ex)) throw "before fail";
+        uint32_t k = size/sizeof(St_Ex);
+        St_Ex temp{};
         uint32_t i{};
-        while(i < k && ff.read(reinterpret_cast<char*>(&temp),sizeof(Fail_Student))){
-            temp.surename[18] = '\0';
-            out << static_cast<int>(temp.group) << ";" << static_cast<int>(temp.srb) << ";" << temp.surename << '\n'; 
+        while(i < k && ff.read(reinterpret_cast<char*>(&temp),sizeof(St_Ex))){
+            temp.surname[18] = '\0';
+            out << static_cast<int>(temp.group) << ";" << static_cast<int>(temp.srb) << ";" << temp.surname << '\n'; 
             ++i;  
         }
         if (i != k) throw "break file";
@@ -158,17 +153,16 @@ void bin_to_txt(std::ifstream& ff, std::string out_ad){
 
 void fail_sort_create(std::ifstream& ff,std::string f_s_ad){
     std::ofstream ff_s_b(f_s_ad, std::ios::out | std::ios::binary | std::ios::trunc);
-    try{
         ofcheck(ff_s_b);
         ff.seekg(0,std::ios::end);
         long long size = ff.tellg();
         ff.seekg(0, std::ios::beg);
-        if(size%sizeof(Fail_Student)) throw "before fail";
-        uint32_t k = size/sizeof(Fail_Student);
+        if(size%sizeof(St_Ex)) throw "before fail";
+        uint32_t k = size/sizeof(St_Ex);
         
-        Fail_Student* arr = new Fail_Student[k]{};
+        St_Ex* arr = new St_Ex[k]{};
         uint32_t i{};
-        while(i < k && ff.read(reinterpret_cast<char*>(&arr[i]), sizeof(Fail_Student))){
+        while(i < k && ff.read(reinterpret_cast<char*>(&arr[i]), sizeof(St_Ex))){
             ++i;
         }
         if (i != k){
@@ -178,7 +172,7 @@ void fail_sort_create(std::ifstream& ff,std::string f_s_ad){
         } 
         tree_sort(arr,k,fail_comp);
         i = 0;
-        while ( i < k  && ff_s_b.write(reinterpret_cast<char*>(&arr[i]), sizeof(Fail_Student))){
+        while ( i < k  && ff_s_b.write(reinterpret_cast<char*>(&arr[i]), sizeof(St_Ex))){
             ++i;
         }
         ff_s_b.close();
@@ -189,16 +183,15 @@ void fail_sort_create(std::ifstream& ff,std::string f_s_ad){
         }
         delete[] arr;
         arr = nullptr;
-    }catch (const char* error){
-        std::cout << error << '\n';
-    }
 }
 
 void create_reports_exstud(const std::string& name) {
     const uint16_t size_struct = sizeof(Prem_St_M);
     std::ifstream file(name, std::ios::binary);
-    std::ofstream newfile("Reports_groups_exstud.bin", std::ios::binary | std::ios::trunc);
+    std::ofstream newfile("reports_groups_exstud.bin", std::ios::binary | std::ios::trunc);
     Prem_St_M stud;
+	ifcheck(file);
+	ofcheck(newfile);
     file.seekg(0, std::ios::end);
     std::streamsize size_report = file.tellg();
     for (int i = 0; i * size_struct < (uint32_t)size_report; ++i) {
@@ -217,16 +210,12 @@ void create_reports_exstud(const std::string& name) {
 
 void fail_create(std::ifstream& ff,std::string fail_ad){
     std::ofstream fail_b(fail_ad, std::ios::out | std::ios::binary | std::ios::trunc);
-    try {
-        ofcheck(fail_b);
-        char temp[56]{};
-        while(ff.read(reinterpret_cast<char*>(&temp), 56)){
+	ofcheck(fail_b);
+        char temp[sizeof(Prem_St_M)]{};
+        while(ff.read(reinterpret_cast<char*>(&temp), sizeof(Prem_St_M))){
             if (static_cast<int>(temp[36]) < 4 || static_cast<int>(temp[45]) < 4 || static_cast<int>(temp[54]) < 4 ){
-                fail_b.write(reinterpret_cast<char*>(&temp), 28);
+                fail_b.write(reinterpret_cast<char*>(&temp), sizeof(St_Ex));
             }
         }
-    } catch(const char* error){
-        std::cout << error;
-    }
 }
 

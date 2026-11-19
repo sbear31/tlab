@@ -29,20 +29,14 @@ struct Prem_St_M {
 	uint8_t m_sub_3;
 };
 struct St_Av {
-	uint8_t group;
-	uint32_t srb;
-	char surname[20];
-	float average;
+	uint8_t group; // 0 4
+	uint32_t srb; //4 4
+	char surname[20];// 8 20
+	float average; //28 4
 };
 
 struct St_Ex {
     uint8_t group;
     uint32_t srb;
-    char surename[20];
-};
-
-struct Fail_Student{
-    uint8_t group{};
-    uint32_t srb{};
-    char surename[20]{};
+    char surname[20];
 };

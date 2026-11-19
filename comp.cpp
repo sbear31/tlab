@@ -1,13 +1,12 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include<struct.h>
+#pragma once
+#include "struct.h"
 #include <cstring>
+#include"main.h"
 
-
-
-
-bool fail_comp(const Fail_Student& a,const Fail_Student& b){
+bool fail_comp(const St_Ex& a,const St_Ex& b){
     if (a.group != b.group) return a.group > b.group;
-    int c = strcmp(a.surename,b.surename);
+    int c = strcmp(a.surname,b.surname);
     if (c != 0){
         return c > 0;
     }
