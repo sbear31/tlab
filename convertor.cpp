@@ -131,7 +131,6 @@ void average_to_bin(std::ifstream& bin_prem_st_m, std::ofstream& bin_avg) // pre
 
 void bin_to_txt(std::ifstream& ff, std::string out_ad){
     std::ofstream out(out_ad, std::ios::out | std::ios::trunc);
-    try{
         ofcheck(out);
         ff.seekg(0,std::ios::end);
         long long size = ff.tellg();
@@ -147,9 +146,6 @@ void bin_to_txt(std::ifstream& ff, std::string out_ad){
             ++i;  
         }
         if (i != k) throw "break file";
-    }catch(const char* error){
-        std::cout << error << '\n';
-    }
 }
 
 void fail_sort_create(std::ifstream& ff,std::string f_s_ad){

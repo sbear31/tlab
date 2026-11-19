@@ -98,7 +98,7 @@ void create_reports_groups_alf(uint8_t group, const std::string& name,const std:
     uint16_t temp, j = 0;
     Prem_St_M stud;
     file.seekg(0, std::ios::end);        
-    std::streamsize size_report = file.tellg();
+    long long size_report = file.tellg();
     for (int i = 0; i * size_struct < (uint32_t)size_report; ++i) {
         file.seekg(i * size_struct, std::ios::beg);
         temp = file.peek();
