@@ -143,6 +143,7 @@ void bin_to_txt(std::ifstream& ff, std::string out_ad){
         while(i < k && ff.read(reinterpret_cast<char*>(&temp),sizeof(St_Ex))){
             temp.surname[18] = '\0';
             out << static_cast<int>(temp.group) << ";" << static_cast<int>(temp.srb) << ";" << temp.surname << '\n'; 
+			std::cout << static_cast<int>(temp.group) << ";" << static_cast<int>(temp.srb) << ";" << temp.surname << '\n';
             ++i;  
         }
         if (i != k) throw "break file";

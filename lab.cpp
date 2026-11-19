@@ -69,11 +69,13 @@ int main(){
         ifcheck(fail);
         fail_sort_create(fail,"fail_sort.bin");
         //f
+        std::cout << "Список неуспевающих" << '\n';
         bin_to_txt(fail, "fail_not_sotr.txt");
         fail.clear();
         fail.close();
         std::ifstream fail_sort("fail_sort.bin", std::ios::in | std::ios::binary);
         ifcheck(fail_sort);
+        std::cout << "Список отсортированных неуспевающих" << '\n';
         bin_to_txt(fail_sort, "fail_sotr.txt");
         fail_sort.clear();
         fail_sort.close();
@@ -94,6 +96,7 @@ int main(){
         fail_sort_create(ff,"temp1.bin");
         std::ifstream temp("temp1.bin", std::ios::in | std::ios::binary);
         ifcheck(temp);
+        std::cout << "Список отличников" << '\n';
         bin_to_txt(temp,"reports_groups_exstud_sort.txt");
   }
   catch (const char* error) {
