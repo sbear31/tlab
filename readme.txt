@@ -1,11 +1,11 @@
 формат структур:
-struct st_d (Student Data) {
+struct St_D (Student Data) {
   uint32_t srb (номер зачетки);
   char surename[20];
   char name[20];
   char lastname[20];
 };
-struct st_m {
+struct St_M {
   uint8_t group;
   uint32_t srb;
   char sub_1[8];
@@ -15,7 +15,7 @@ struct st_m {
   char sub_3[8];
   uint8_t m_sub_3;
 };
-struct prem_st_m {
+struct Prem_St_M {
   uint8_t group; //0 4
   uint32_t srb; //4 4
   char surename[20]; //8 20
@@ -26,20 +26,14 @@ struct prem_st_m {
   char sub_3[8]; //46 8
   uint8_t m_sub_3; //54 2
 };
-struct st_av (Student Average) {
+struct St_Av (Student Average) {
   uint8_t group;
   uint32_t srb;
   char surename[20];
   float average;
 };
-struct st_ex (Exelent Student) {
+struct St_Ex (Exelent Student) {
     uint8_t group;
     uint32_t srb;
     char surename[20];
 };
-
-struct Fail Student{
-  uint8_t group;//0 4
-  uint32_t srb;//4 8 
-  char[20] surename;//8 28
-}
